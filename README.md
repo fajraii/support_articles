@@ -1,6 +1,6 @@
 # support_articles
 
-Support Articles for PermataBank.
+Support Articles for All Projects.
 
 ## Getting Started
 
