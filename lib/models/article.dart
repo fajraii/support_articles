@@ -3,5 +3,4 @@ class Article {
   final String content;
 
   Article({this.title, this.content});
-
 }

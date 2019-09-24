@@ -1,26 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:support_articles/models/article_data.dart';
+import 'package:support_articles/widgets/card_builder.dart';
 
-class FavoriteTab extends StatelessWidget {
+class FavoriteTab extends StatefulWidget {
+  @override
+  _FavoriteTabState createState() => _FavoriteTabState();
+}
+
+class _FavoriteTabState extends State<FavoriteTab> {
+  List articles;
+
+  @override
+  void initState() {
+    articles = ArticleData().getFavorites;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Icon(
-                  Icons.settings,
-                  size: 100.0,
-                  color: Colors.white,
-                ),
-                Text(
-                  "Favorite Tab",
-                  style: TextStyle(color: Colors.black),
-                )
-              ],
-            ),
-          ),
-        ));
+      margin: EdgeInsets.only(left: 5, right: 5),
+      child: RefreshIndicator(
+        onRefresh: _refreshList,
+        child: ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: articles.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Cards(article: articles[index]);
+          },
+        ),
+      ),
+    ));
   }
+}
+
+Future<Null> _refreshList() async {
+  await Future.delayed(Duration(seconds: 2));
+  return null;
 }

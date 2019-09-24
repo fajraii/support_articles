@@ -13,10 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Support Articles',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Lato',
-        primarySwatch: Colors.indigo,
-      ),
+      theme: ThemeData(fontFamily: 'Lato', primaryColor: Colors.indigo),
       home: MyHomePage(),
     );
   }
@@ -27,9 +24,10 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateMixin {
+class _MyHomePageState extends State<MyHomePage>
+    with SingleTickerProviderStateMixin {
   TabController _tabController;
-
+  int _currentIndex = 0;
   @override
   void initState() {
     super.initState();
@@ -46,9 +44,11 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
         centerTitle: true,
-        title: Text('Support Articles', style: TextStyle(color: Colors.indigo),),
+        title: Text(
+          'Support Articles',
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body: TabBarView(children: <Widget>[
         HomeTab(),
@@ -56,22 +56,39 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
         FavoriteTab(),
         SettingTab()
       ], controller: _tabController),
-      bottomNavigationBar: SizedBox(
-        height: 50,
-        child: Material(
-          child: TabBar(
-            tabs: <Tab>[
-              Tab(icon: Icon(Icons.home, color:  Colors.indigo), text: 'Home',),
-              Tab(icon: Icon(Icons.search, color:  Colors.indigo), text: 'Search',),
-              Tab(icon: Icon(Icons.favorite, color:  Colors.indigo), text: 'Favorites',),
-              Tab(icon: Icon(Icons.settings, color:  Colors.indigo), text: 'Settings',)
-            ],
-            controller: _tabController,
-            unselectedLabelColor: Colors.indigo,
-            labelColor: Colors.indigo,
-          ),
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      bottomNavigationBar: BottomNavigationBar(
+        fixedColor: Colors.indigo,
+        currentIndex: _currentIndex,
+        onTap: (currentIndex) {
+          setState(() {
+            _currentIndex = currentIndex;
+            _tabController.animateTo(currentIndex);
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+              icon: Icon(
+                Icons.home,
+                color: Colors.indigo,
+              ),
+              title: Text(
+                'Home',
+              )),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.search, color: Colors.indigo),
+              title: Text(
+                'Search',
+                style: TextStyle(color: Colors.indigo),
+              )),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.favorite, color: Colors.indigo),
+              title: Text('Favorite')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.settings, color: Colors.indigo),
+              title: Text('Settings'))
+        ],
+      ),
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
