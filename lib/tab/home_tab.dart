@@ -26,18 +26,20 @@ class _HomeTabState extends State<HomeTab> {
           color: Colors.white,
         ),
       ),
-      body: Container(
-        margin: EdgeInsets.only(left: 5, right: 5),
-        child: RefreshIndicator(
-          child: ListView.builder(
-            scrollDirection: Axis.vertical,
-            shrinkWrap: true,
-            itemCount: articles.length,
-            itemBuilder: (BuildContext context, int index) {
-              return Cards(article: articles[index]);
-            },
+      body: SafeArea(
+        child: Container(
+          margin: EdgeInsets.only(left: 5, right: 5),
+          child: RefreshIndicator(
+            child: ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: articles.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Cards(article: articles[index]);
+              },
+            ),
+            onRefresh: _refreshList,
           ),
-          onRefresh: _refreshList,
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:support_articles/tab/home_tab.dart';
 import 'package:support_articles/tab/search_tab.dart';
 import 'package:support_articles/tab/favorite_tab.dart';
 import 'package:support_articles/tab/settings_tab.dart';
+import 'package:bottom_navy_bar/bottom_navy_bar.dart';
 
 void main() => runApp(MyApp());
 
@@ -26,69 +27,72 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage>
     with SingleTickerProviderStateMixin {
-  TabController _tabController;
+  PageController _pageController;
+
   int _currentIndex = 0;
+
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _pageController = PageController(initialPage: 0, keepPage: true);
   }
 
   @override
   void dispose() {
-    _tabController.dispose();
+    _pageController.dispose();
     super.dispose();
+  }
+
+  void _onPageChanged(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(
-          'Support Articles',
-          style: TextStyle(color: Colors.white),
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(
+            'Support Articles',
+            style: TextStyle(color: Colors.white),
+          ),
         ),
-      ),
-      body: TabBarView(children: <Widget>[
-        HomeTab(),
-        SearchTab(),
-        FavoriteTab(),
-        SettingTab()
-      ], controller: _tabController),
-      bottomNavigationBar: BottomNavigationBar(
-        fixedColor: Colors.indigo,
-        currentIndex: _currentIndex,
-        onTap: (currentIndex) {
-          setState(() {
-            _currentIndex = currentIndex;
-            _tabController.animateTo(currentIndex);
-          });
-        },
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(
-                Icons.home,
-                color: Colors.indigo,
-              ),
-              title: Text(
-                'Home',
-              )),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.search, color: Colors.indigo),
-              title: Text(
-                'Search',
-                style: TextStyle(color: Colors.indigo),
-              )),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.favorite, color: Colors.indigo),
-              title: Text('Favorite')),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings, color: Colors.indigo),
-              title: Text('Settings'))
-        ],
-      ),
-      // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        body: PageView(
+          controller: _pageController,
+          onPageChanged: _onPageChanged,
+          children: <Widget>[
+            HomeTab(),
+            SearchTab(),
+            FavoriteTab(),
+            SettingTab()
+          ],
+        ),
+        bottomNavigationBar: BottomNavyBar(
+            showElevation: true,
+            selectedIndex: _currentIndex,
+            items: [
+              BottomNavyBarItem(
+                  icon: Icon(Icons.home, color: Colors.indigo),
+                  title: Text('Home')),
+              BottomNavyBarItem(
+                  icon: Icon(Icons.search, color: Colors.indigo),
+                  title: Text('Search')),
+              BottomNavyBarItem(
+                  icon: Icon(Icons.favorite, color: Colors.indigo),
+                  title: Text('Favorite')),
+              BottomNavyBarItem(
+                  icon: Icon(Icons.settings, color: Colors.indigo),
+                  title: Text('Settings')),
+            ],
+            onItemSelected: (index) => setState(() {
+                  _currentIndex = index;
+                  _pageController.animateToPage(index,
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.ease);
+                }))
+        // This trailing comma makes auto-formatting nicer for build methods.
+        );
   }
 }
